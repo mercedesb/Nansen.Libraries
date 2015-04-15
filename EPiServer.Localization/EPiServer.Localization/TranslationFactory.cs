@@ -1,5 +1,4 @@
-﻿using EPiServer;
-using EPiServer.Core;
+﻿using EPiServer.Core;
 using EPiServer.Localization.Models;
 using EPiServer.ServiceLocation;
 using log4net;
