@@ -1,4 +1,5 @@
 ﻿using EPiServer;
+using EPiServer.ContentTransfer;
 using EPiServer.Core;
 using EPiServer.DataAccess;
 using EPiServer.Localization.Models;
@@ -8,7 +9,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 
-namespace BlueBuffalo.Core.ContentTransfer
+namespace Examples
 {
 	public class TranslationItemImporter : PageXMLImporter<BaseLocalizationPage>
 	{

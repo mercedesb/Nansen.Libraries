@@ -3,7 +3,7 @@ using EPiServer.Core;
 using System.Collections.Generic;
 using System.IO;
 
-namespace BlueBuffalo.Core.ContentTransfer
+namespace EPiServer.ContentTransfer
 {
 	public abstract class BlockExcelImporter<T, TEnum> : BaseContentExcelImporter<T, TEnum> where T : BlockData where TEnum : struct
 	{

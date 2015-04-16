@@ -20,5 +20,11 @@ namespace EPiServer.ContentTransfer.Utility
 			reader.ReadToEnd();
 			return reader.ExcelData;
 		}
+
+		public static string[] GetExcelFirstRow(Stream fileStream)
+		{
+			ExcelReader reader = new ExcelReader(fileStream, 0, false);
+			return reader.ReadFirstRow();
+		}
 	}
 }

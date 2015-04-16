@@ -1,5 +1,5 @@
 ﻿
-namespace BlueBuffalo.Core.ContentTransfer
+namespace EPiServer.ContentTransfer
 {
 	public interface IContentExporter
 	{

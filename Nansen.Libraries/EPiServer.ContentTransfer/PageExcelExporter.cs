@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-namespace BlueBuffalo.Core.ContentTransfer
+namespace EPiServer.ContentTransfer
 {
-	public abstract class PageExcelExporter<T> : IContentExporter where T: PageData
+	public abstract class PageExcelExporter<T> : BaseContentExcelExporter<T> where T: PageData
 	{
 		public List<string> Errors { get; protected set; }
 		protected System.Web.HttpResponse _response { get; set; }
@@ -20,28 +20,16 @@ namespace BlueBuffalo.Core.ContentTransfer
 		protected IContentRepository _contentRepository;
 
 		public PageExcelExporter(List<string> errors, ContentReference container, System.Web.HttpResponse response)
+			: base(errors, response)
 		{
 			_contentRepository = ServiceLocator.Current.GetInstance<IContentRepository>();
-
-			Errors = errors;
 			_container = container;
-			_response = response;
 		}
 
-		public virtual void CreateFile()
+		protected override IEnumerable<T> GetContentData()
 		{
-			try
-			{
-				IEnumerable<T> pages = _contentRepository.GetDescendents(_container).Select(cr => _contentRepository.Get<T>(cr));
-				ExcelWriter.CreateExcelDocument(GetPageDataTable(pages), string.Format("{0}s-{1:yyyy-MM-dd}.xlsx", typeof(T).Name, DateTime.Now), _response);
-			}
-			catch (Exception ex)
-			{
-				Errors.Add(string.Format("Oops, something went wrong.  Please screenshot the following error and send to Nansen. <br/> {0} <br/> {1}", ex.Message, ex.StackTrace));
-			}
+			return _contentRepository.GetDescendents(_container).Select(cr => _contentRepository.Get<T>(cr));
 		}
-
-		protected abstract DataTable GetPageDataTable(IEnumerable<T> pages);
 
 		protected virtual string GetContentIdsString(ContentArea contentArea)
 		{
@@ -58,22 +46,6 @@ namespace BlueBuffalo.Core.ContentTransfer
 				Errors.Add(string.Format("Oops, something went wrong.  Please screenshot the following error and send to Nansen. <br/> {0} <br/> {1}", ex.Message, ex.StackTrace));
 				return string.Empty;
 			}
-		}
-
-		protected virtual string GetIDValue(ContentReference contentRef)
-		{
-			if (contentRef != null)
-				return GetValue(contentRef.ID);
-
-			return string.Empty;
-		}
-
-		protected virtual string GetValue<V>(V value)
-		{
-			if (value == null)
-				return string.Empty;
-
-			return value.ToString();
 		}
 
 		protected virtual string GetCategoriesString(string categoryIds)

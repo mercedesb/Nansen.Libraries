@@ -6,7 +6,7 @@ using System.Linq;
 using System.IO;
 using EPiServer.ContentTransfer.Utility;
 
-namespace BlueBuffalo.Core.ContentTransfer
+namespace EPiServer.ContentTransfer
 {
     public abstract class PageExcelImporter<T, TEnum> : BaseContentExcelImporter<T, TEnum>
         where T : PageData

@@ -126,6 +126,7 @@
       <HintPath>..\packages\structuremap.2.6.4.1\lib\net40\StructureMap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -158,8 +159,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="EventDetailsPageImporter.cs" />
+    <Compile Include="Models\EventDetailsPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TranslationItemImporter.cs" />
+    <Compile Include="Utility\Extensions\EnumExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EPiServer.ContentTransfer\EPiServer.ContentTransfer.csproj">
@@ -175,9 +180,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Utility\Extensions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

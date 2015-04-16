@@ -1,12 +1,13 @@
-﻿using EPiServer;
-using EPiServer.ContentTransfer.Properties;
+﻿using EPiServer.ContentTransfer.Properties;
 using EPiServer.Core;
 using EPiServer.DataAccess;
 using EPiServer.ServiceLocation;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
-namespace BlueBuffalo.Core.ContentTransfer
+namespace EPiServer.ContentTransfer
 {
     public abstract class BaseContentExcelImporter<T, TEnum> : IContentImporter
         where T : ContentData
@@ -143,5 +144,37 @@ namespace BlueBuffalo.Core.ContentTransfer
             else
                 return excelValue;
         }
-    }
+
+		protected virtual void SetContentAreaBlocks(IEnumerable<string> ids, ContentArea contentArea, List<string> errors = null)
+		{
+			if (!ids.Any()) return;
+
+			if (contentArea == null) contentArea = new ContentArea().CreateWritableClone();
+			if (contentArea.Items != null && contentArea.Items.Count > 0) contentArea.Items.Clear();
+
+			foreach (var contentId in ids)
+			{
+				try
+				{
+					var contentRef = new ContentReference(int.Parse(contentId));
+					if (ServiceLocator.Current.GetInstance<IContentRepository>().Get<ContentData>(contentRef) != null)
+					{
+						contentArea.Items.Add(new ContentAreaItem { ContentLink = contentRef });
+					}
+				}
+				catch (ContentNotFoundException cnfex)
+				{
+					if (errors != null)
+						errors.Add(string.Format("Could not add block.  Content with ID: {0} does not exist", contentId));
+				}
+				catch (Exception ex)
+				{
+					if (errors != null)
+					{
+						errors.Add(string.Format("Could not add block.  Update failed for content ID {0}", contentId));
+					}
+				}
+			}
+		}
+	}
 }

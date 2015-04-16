@@ -5,7 +5,7 @@ using EPiServer.ServiceLocation;
 using System.Collections.Generic;
 using System.IO;
 
-namespace BlueBuffalo.Core.ContentTransfer
+namespace EPiServer.ContentTransfer
 {
 	public abstract class MediaExcelImporter<T, TEnum> : IContentImporter
 		where T : MediaData

@@ -8,20 +8,17 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-namespace BlueBuffalo.Core.ContentTransfer
+namespace EPiServer.ContentTransfer
 {
-	public abstract class BlockExcelExporter<T> : IContentExporter where T : BlockData
+	public abstract class BlockExcelExporter<T> : BaseContentExcelExporter<T> where T : BlockData
 	{
 		public List<string> Errors { get; protected set; }
 		protected System.Web.HttpResponse _response { get; set; }
 
 		public BlockExcelExporter(List<string> errors, System.Web.HttpResponse response)
-		{
-			Errors = errors;
-			_response = response;
-		}
+			: base(errors, response) { }
 
-		public virtual void CreateFile()
+		public override void CreateFile()
 		{
 			var contentRepository = ServiceLocator.Current.GetInstance<IContentRepository>();
 			var contentTypeRepository = ServiceLocator.Current.GetInstance<IContentTypeRepository>();
@@ -37,25 +34,7 @@ namespace BlueBuffalo.Core.ContentTransfer
 														.Select(b => contentRepository.Get<T>(b))
 														.Where(b => (b as IContent).ParentLink != ContentReference.WasteBasket);
 
-			ExcelWriter.CreateExcelDocument(GetBlockDataTable(blocks), string.Format("{0}s-{1:yyyy-MM-dd}.xlsx", typeof(T).Name, DateTime.Now), _response);
-		}
-
-		protected abstract DataTable GetBlockDataTable(IEnumerable<T> blocks);
-
-		protected virtual string GetIDValue(ContentReference contentRef)
-		{
-			if (contentRef != null)
-				return GetValue(contentRef.ID);
-
-			return string.Empty;
-		}
-
-		protected virtual string GetValue<V>(V value)
-		{
-			if (value == null)
-				return string.Empty;
-
-			return value.ToString();
+			ExcelWriter.CreateExcelDocument(GetContentDataTable(blocks), string.Format("{0}s-{1:yyyy-MM-dd}.xlsx", typeof(T).Name, DateTime.Now), _response);
 		}
 	}
 }
