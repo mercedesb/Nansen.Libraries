@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using EPiServer.ContentTransfer.Utility;
+using EPiServer.ServiceLocation;
 
 namespace EPiServer.ContentTransfer
 {
@@ -13,11 +14,13 @@ namespace EPiServer.ContentTransfer
         where TEnum : struct
     {
         protected IEnumerable<T> _pages;
+		protected CategoryRepository _categoryRepository;
 
         public PageExcelImporter(List<string> errors, int containerRefId, string language = "", int idColumnIndex = 0, bool overwrite = false)
             : base(errors, containerRefId, language, idColumnIndex, overwrite)
         {
 			_contentRepository.GetDescendents(ContentReference.StartPage).Select(cr => _contentRepository.Get<T>(cr, LanguageSelector.MasterLanguage()));
+			_categoryRepository = ServiceLocator.Current.GetInstance<CategoryRepository>();
         }
 
         protected override void HandleRowsFromExcel(Stream fileStream)
@@ -82,7 +85,7 @@ namespace EPiServer.ContentTransfer
             string[] categories = categoryString.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             foreach (string categoryName in categories)
             {
-                Category categoryToAdd = Category.GetRoot().FindChild(categoryName);
+                Category categoryToAdd = _categoryRepository.GetRoot().FindChild(categoryName);
                 if (categoryToAdd == null)
                 {
                     string categoryErrorString = string.Format(ERROR_FORMAT_STRING, CATEGORY_ERROR_KEY, contentId);

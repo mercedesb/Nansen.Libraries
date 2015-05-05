@@ -4,6 +4,7 @@ using EPiServer.DataAccess;
 using EPiServer.ServiceLocation;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -28,6 +29,7 @@ namespace EPiServer.ContentTransfer
         protected IContentRepository _contentRepository;
         protected int _idColumnIndex;
         protected string _lang;
+		protected CultureInfo _culture;
         protected ILanguageSelector _langSelector;
 
         public BaseContentExcelImporter(List<string> errors, int containerRefId, string language = "", int idColumnIndex = 0, bool overwrite = false)
@@ -35,10 +37,16 @@ namespace EPiServer.ContentTransfer
 			Errors = errors;
             _container = new ContentReference(containerRefId);
 
-            if (!string.IsNullOrWhiteSpace(language))
-                _lang = language; 
-            else
-                _lang = Settings.Default.MASTER_LANGUAGE;
+			if (!string.IsNullOrWhiteSpace(language))
+			{
+				_lang = language;
+				_culture = new CultureInfo(language);
+			}
+			else
+			{
+				_lang = Settings.Default.MASTER_LANGUAGE;
+				_culture = new CultureInfo(Settings.Default.MASTER_LANGUAGE);
+			}
 
             _langSelector = new LanguageSelector(_lang);
 
@@ -68,7 +76,7 @@ namespace EPiServer.ContentTransfer
         {
             if (Settings.Default.ALWAYS_CREATE_MASTER_LANGUAGE && Settings.Default.MASTER_LANGUAGE != _lang)
             {
-                T masterLanguageContent = _contentRepository.GetDefault<T>(_container, new LanguageSelector(Settings.Default.MASTER_LANGUAGE));
+                T masterLanguageContent = _contentRepository.GetDefault<T>(_container, new CultureInfo(Settings.Default.MASTER_LANGUAGE));
                 SetContentName(masterLanguageContent, contentValues);
                 SetGlobalProperties(masterLanguageContent, contentValues);
 
@@ -81,7 +89,7 @@ namespace EPiServer.ContentTransfer
             }
             else
             {
-                T content = _contentRepository.GetDefault<T>(_container, _langSelector);
+                T content = _contentRepository.GetDefault<T>(_container, _culture);
                 SetContentData(content, contentValues);
                 HandleCreateContentPublish(content as IContent);
             }
@@ -98,7 +106,7 @@ namespace EPiServer.ContentTransfer
         protected virtual void UpdateContent(IContent content, string[] contentValues)
         {
             T clone;
-            T langPage = _contentRepository.Get<IContent>(content.ContentLink, _langSelector) as T;
+			T langPage = _contentRepository.Get<IContent>(content.ContentLink, _culture) as T;
             if (langPage == null)
                 clone = CreateLanguageBranch(content.ContentLink);
             else
@@ -162,12 +170,12 @@ namespace EPiServer.ContentTransfer
 						contentArea.Items.Add(new ContentAreaItem { ContentLink = contentRef });
 					}
 				}
-				catch (ContentNotFoundException cnfex)
+				catch (ContentNotFoundException)
 				{
 					if (errors != null)
 						errors.Add(string.Format("Could not add block.  Content with ID: {0} does not exist", contentId));
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
 					if (errors != null)
 					{

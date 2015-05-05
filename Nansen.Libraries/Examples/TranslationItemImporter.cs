@@ -5,6 +5,7 @@ using EPiServer.DataAccess;
 using EPiServer.Localization.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -31,6 +32,7 @@ namespace Examples
 		protected string _translationsContainerName;
 		protected string _categoryContainerName;
 
+		private CultureInfo _culture;
 		private string _lang;
 
 		public TranslationItemImporter(List<string> errors, ContentReference translationContainer = null, 
@@ -47,6 +49,7 @@ namespace Examples
 		protected virtual void SetLanguage(string languageId)
 		{
 			_lang = languageId;
+			_culture = new CultureInfo(languageId);
 		}
 
 		protected virtual void SetUpContainers()
@@ -198,7 +201,7 @@ namespace Examples
 
 		protected virtual ContentReference CreatePage<T>(XmlNode node, ContentReference parentLink) where T : PageData, IXmlImportable
 		{
-			T createdPage = _contentRepository.GetDefault<T>(parentLink, new LanguageSelector(_lang));
+			T createdPage = _contentRepository.GetDefault<T>(parentLink, _culture);
 			createdPage.SetPageData(node);
 			ContentReference pageReference = _contentRepository.Save(createdPage, SaveAction.Publish);
 			Created++;

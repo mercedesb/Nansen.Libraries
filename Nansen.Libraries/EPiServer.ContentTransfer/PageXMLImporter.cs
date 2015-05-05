@@ -45,7 +45,7 @@ namespace EPiServer.ContentTransfer
 				ReadXML(root, ContentReference.RootPage);
 				
 			}
-			catch(XmlException ex)
+			catch(XmlException)
 			{
 				Errors.Add("Malformed xml");
 			}

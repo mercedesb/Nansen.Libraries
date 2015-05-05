@@ -12,13 +12,16 @@ namespace EPiServer.ContentTransfer
 {
 	public abstract class BlockExcelExporter<T> : BaseContentExcelExporter<T> where T : BlockData
 	{
-		public List<string> Errors { get; protected set; }
-		protected System.Web.HttpResponse _response { get; set; }
-
 		public BlockExcelExporter(List<string> errors, System.Web.HttpResponse response)
 			: base(errors, response) { }
 
 		public override void CreateFile()
+		{
+			IEnumerable<T> blocks = GetContentData();
+			ExcelWriter.CreateExcelDocument(GetContentDataTable(blocks), string.Format("{0}s-{1:yyyy-MM-dd}.xlsx", typeof(T).Name, DateTime.Now), _response);
+		}
+
+		protected override IEnumerable<T> GetContentData()
 		{
 			var contentRepository = ServiceLocator.Current.GetInstance<IContentRepository>();
 			var contentTypeRepository = ServiceLocator.Current.GetInstance<IContentTypeRepository>();
@@ -28,13 +31,11 @@ namespace EPiServer.ContentTransfer
 			var blockType = contentTypeRepository.Load<T>();
 
 			// MB: get all distinct usages (most recent version) of that block type that are not in the trash
-			IEnumerable<T> blocks = contentModelUsage.ListContentOfContentType(blockType)
+			return contentModelUsage.ListContentOfContentType(blockType)
 														.Select(u => u.ContentLink.ToReferenceWithoutVersion())
 														.Distinct()
 														.Select(b => contentRepository.Get<T>(b))
 														.Where(b => (b as IContent).ParentLink != ContentReference.WasteBasket);
-
-			ExcelWriter.CreateExcelDocument(GetContentDataTable(blocks), string.Format("{0}s-{1:yyyy-MM-dd}.xlsx", typeof(T).Name, DateTime.Now), _response);
 		}
 	}
 }

@@ -8,9 +8,6 @@ namespace EPiServer.ContentTransfer
 {
 	public abstract class MediaExcelExporter<T> : BaseContentExcelExporter<T> where T : MediaData
 	{
-		public List<string> Errors { get; protected set; }
-		protected System.Web.HttpResponse _response { get; set; }
-
 		protected IEnumerable<ContentReference> _containers { get; set; }
 
 		public MediaExcelExporter(List<string> errors, IEnumerable<ContentReference> containers, System.Web.HttpResponse response)

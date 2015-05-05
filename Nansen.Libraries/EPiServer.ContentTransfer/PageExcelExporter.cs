@@ -12,17 +12,16 @@ namespace EPiServer.ContentTransfer
 {
 	public abstract class PageExcelExporter<T> : BaseContentExcelExporter<T> where T: PageData
 	{
-		public List<string> Errors { get; protected set; }
-		protected System.Web.HttpResponse _response { get; set; }
-
 		protected ContentReference _container { get; set; }
 
 		protected IContentRepository _contentRepository;
+		protected CategoryRepository _categoryRepository;
 
 		public PageExcelExporter(List<string> errors, ContentReference container, System.Web.HttpResponse response)
 			: base(errors, response)
 		{
 			_contentRepository = ServiceLocator.Current.GetInstance<IContentRepository>();
+			_categoryRepository = ServiceLocator.Current.GetInstance<CategoryRepository>();
 			_container = container;
 		}
 
@@ -56,7 +55,7 @@ namespace EPiServer.ContentTransfer
 			{
 				int categoryId;
 				if (int.TryParse(categoryIdsArr[i], out categoryId))
-					categoryNamesArr[i] = Category.GetRoot().FindChild(categoryId).Name;
+					categoryNamesArr[i] = _categoryRepository.GetRoot().FindChild(categoryId).Name;
 			}
 			return string.Join(",", categoryNamesArr);
 		}
