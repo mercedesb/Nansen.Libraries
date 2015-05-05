@@ -75,7 +75,7 @@ namespace Examples
 				page.MetaDescription = SetProperty(pageValues[(int)EventDetailsPageRows.MetaDescription], page.MetaDescription);
 				page.MetaAuthor = SetProperty(pageValues[(int)EventDetailsPageRows.MetaAuthor], page.MetaAuthor);
 			}
-			catch (IndexOutOfRangeException ex)
+			catch (IndexOutOfRangeException)
 			{
 				//Trailing columns of row were left blank by user
 				//no empty strings were inserted by the code
@@ -115,7 +115,7 @@ namespace Examples
 				page.VisibleInMenu = true;
 				page.IsSearchable = true;
 			}
-			catch (IndexOutOfRangeException ex)
+			catch (IndexOutOfRangeException)
 			{
 				//Trailing columns of row were left blank by user
 				//no empty strings were inserted by the code
@@ -165,7 +165,7 @@ namespace Examples
 			if (!string.IsNullOrWhiteSpace(imageId))
 			{
 				var contentRef = new ContentReference(int.Parse(imageId));
-				return ServiceLocator.Current.GetInstance<UrlResolver>().GetVirtualPath(contentRef);
+				return ServiceLocator.Current.GetInstance<UrlResolver>().GetUrl(contentRef);
 			}
 			return string.Empty;
 		}

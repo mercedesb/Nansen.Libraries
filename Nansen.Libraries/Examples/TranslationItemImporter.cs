@@ -28,8 +28,8 @@ namespace Examples
 
 		protected virtual CategoryTranslationContainer CategoryContainer { get; set; }
 
-		protected virtual string _translationsContainerName;
-		protected virtual string _categoryContainerName;
+		protected string _translationsContainerName;
+		protected string _categoryContainerName;
 
 		private string _lang;
 
