@@ -160,6 +160,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BackgroundImageBlockExporter.cs" />
     <Compile Include="BackgroundImageBlockImporter.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="EventDetailsPageImporter.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TranslationItemImporter.cs" />
     <Compile Include="Utility\Extensions\EnumExtensions.cs" />
+    <Compile Include="Utility\Extensions\UrlExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EPiServer.ContentTransfer\EPiServer.ContentTransfer.csproj">
