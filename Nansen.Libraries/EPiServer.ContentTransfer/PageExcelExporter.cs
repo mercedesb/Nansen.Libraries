@@ -12,9 +12,6 @@ namespace EPiServer.ContentTransfer
 {
 	public abstract class PageExcelExporter<T> : BaseContentExcelExporter<T> where T: PageData
 	{
-		public List<string> Errors { get; protected set; }
-		protected System.Web.HttpResponse _response { get; set; }
-
 		protected ContentReference _container { get; set; }
 
 		protected IContentRepository _contentRepository;

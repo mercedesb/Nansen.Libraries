@@ -65,7 +65,7 @@ namespace EPiServer.ContentTransfer
 					}
 				}
 			}
-			catch (ContentNotFoundException cnfex)
+			catch (ContentNotFoundException)
 			{
 				Errors.Add(string.Format("Update failed for block ID: {0} A block with this ID does not exist", blockValues[_idColumnIndex]));
 			}

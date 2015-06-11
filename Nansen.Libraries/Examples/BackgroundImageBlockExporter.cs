@@ -13,7 +13,7 @@ namespace Examples
 		public BackgroundImageBlockExporter(List<string> errors, System.Web.HttpResponse response)
 			: base(errors, response) { }
 
-		protected override DataTable GetBlockDataTable(IEnumerable<BackgroundImageBlock> blocks)
+		protected override DataTable GetContentDataTable(IEnumerable<BackgroundImageBlock> blocks)
 		{
 			DataTable dt = new DataTable();
 			Array values = Enum.GetValues(typeof(BackgroundBlockRows));

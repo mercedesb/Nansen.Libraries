@@ -12,18 +12,15 @@ namespace EPiServer.ContentTransfer
 {
 	public abstract class BlockExcelExporter<T> : BaseContentExcelExporter<T> where T : BlockData
 	{
-		public List<string> Errors { get; protected set; }
-		protected System.Web.HttpResponse _response { get; set; }
-
 		public BlockExcelExporter(List<string> errors, System.Web.HttpResponse response)
 			: base(errors, response) { }
 
-		public override void CreateFile()
+		protected override IEnumerable<T> GetContentData()
 		{
 			var contentRepository = ServiceLocator.Current.GetInstance<IContentRepository>();
 			var contentTypeRepository = ServiceLocator.Current.GetInstance<IContentTypeRepository>();
 			var contentModelUsage = ServiceLocator.Current.GetInstance<IContentModelUsage>();
-
+			
 			// loading a block type
 			var blockType = contentTypeRepository.Load<T>();
 
@@ -34,7 +31,13 @@ namespace EPiServer.ContentTransfer
 														.Select(b => contentRepository.Get<T>(b))
 														.Where(b => (b as IContent).ParentLink != ContentReference.WasteBasket);
 
-			ExcelWriter.CreateExcelDocument(GetContentDataTable(blocks), string.Format("{0}s-{1:yyyy-MM-dd}.xlsx", typeof(T).Name, DateTime.Now), _response);
+			return blocks;
+		}
+
+		public override void CreateFile()
+		{
+
+			ExcelWriter.CreateExcelDocument(GetContentDataTable(GetContentData()), string.Format("{0}s-{1:yyyy-MM-dd}.xlsx", typeof(T).Name, DateTime.Now), _response);
 		}
 	}
 }

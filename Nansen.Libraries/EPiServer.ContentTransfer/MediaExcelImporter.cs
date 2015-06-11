@@ -76,7 +76,7 @@ namespace EPiServer.ContentTransfer
 					Errors.Add(string.Format("Update failed for media ID: {0} A media item with this ID does not exist", mediaValues[0]));
 				}
 			}
-			catch (ContentNotFoundException cnfex)
+			catch (ContentNotFoundException)
 			{
 				Errors.Add(string.Format("Update failed for media ID: {0} A media item with this ID does not exist", mediaValues[0]));
 			}
