@@ -162,12 +162,12 @@ namespace EPiServer.ContentTransfer
 						contentArea.Items.Add(new ContentAreaItem { ContentLink = contentRef });
 					}
 				}
-				catch (ContentNotFoundException cnfex)
+				catch (ContentNotFoundException)
 				{
 					if (errors != null)
 						errors.Add(string.Format("Could not add block.  Content with ID: {0} does not exist", contentId));
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
 					if (errors != null)
 					{
